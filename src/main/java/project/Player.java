@@ -75,6 +75,10 @@ public class Player {
     this.wins = wins;
   }
 
+  public int getWins(){
+    return wins;
+  }
+
   public int win(){
     wins++;
     return wins;

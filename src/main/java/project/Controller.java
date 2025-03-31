@@ -35,7 +35,7 @@ public class Controller {
   @FXML
   private Label playerHandLbl;
   @FXML
-  private Label playerWinsLlbl;
+  private Label playerWinsLbl;
   @FXML
   private Label winLabel;
   
@@ -43,8 +43,8 @@ public class Controller {
   private Button yesButton;
   @FXML 
   private Button noButton;
-  @FXML
-  private Button clearButton;
+  // @FXML
+  // private Button clearButton;
   @FXML
   private Button hitButton;
   @FXML
@@ -60,7 +60,7 @@ public class Controller {
     try{
       gameData = new SaveGame();
     }catch(IOException e){
-      System.out.println("Not enough storage to create this file");
+      System.out.println("File not found");
     }
     if(!gameData.hasGameData()){
       noLoadOption();
@@ -86,11 +86,11 @@ public class Controller {
   void loadOption(){
     playerHandHBox.getChildren().remove(loadGameVBox);
     int[] fileValues = gameData.loadSaveFile();
-    dealer.setWins(fileValues[0]);
-    player.setWins(fileValues[1]);
-    String playerWin = String.format("Player Wins: %d", player.win() - 1);
-    String dealerWin = String.format("Dealer Wins: %d", dealer.win() - 1);
-    playerWinsLlbl.setText(playerWin);
+    player.setWins(fileValues[0]);
+    dealer.setWins(fileValues[1]);
+    String playerWin = String.format("Player Wins: %d", player.getWins());
+    String dealerWin = String.format("Dealer Wins: %d", dealer.getWins());
+    playerWinsLbl.setText(playerWin);
     dealerWinsLbl.setText(dealerWin);
   }
 
@@ -100,15 +100,17 @@ public class Controller {
     playerHandHBox.getChildren().remove(loadGameVBox);
   }
 
-  @FXML
-  void clearSaveData(){
-    playerHandHBox.getChildren().remove(loadGameVBox);
-    try{
-      gameData.clearGameData();
-    }catch(IOException e ){
-      System.out.println("Not enough memory to write into the file");
-    }
-  }
+  //not needed because if you select to not load game data, then your information
+  //wil be rewritten regardless
+  // @FXML
+  // void clearSaveData(){
+  //   playerHandHBox.getChildren().remove(loadGameVBox);
+  //   try{
+  //     gameData.clearGameData();
+  //   }catch(IOException e ){
+  //     System.out.println("File not Found");
+  //   }
+  // }
 
   @FXML
   void hit(ActionEvent event) {
@@ -118,7 +120,6 @@ public class Controller {
       endGame();
     }
   }
-
 
   @FXML
   void stand(ActionEvent event) {
@@ -139,32 +140,32 @@ public class Controller {
   public void endGame(){
     int playerHand= player.valueOfHand();
     int dealerHand = dealer.valueOfHand();
-
-    String dealerWin = String.format("Dealer Wins: %d", dealer.win());
     String dWin = "Dealer wins!";
-    String playerWin = String.format("Player Wins: %d", player.win());
     String pWin = "Player wins!";
-
     String bust = "%d Bust!";
-
 
     winLabel.setVisible(true);
     if(player.busted()){
       playerHandLbl.setText(String.format(bust, playerHand));
-      dealerWinsLbl.setText(dealerWin);
+      dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.win()));
       winLabel.setText(dWin);
     }else if(dealer.busted()){
       dealerHandLbl.setText(String.format(bust, dealerHand));
-      playerWinsLlbl.setText(playerWin);
+      playerWinsLbl.setText(String.format("Player Wins: %d", player.win()));
       winLabel.setText(pWin);
     }else if(dealerHand > playerHand){
-      dealerWinsLbl.setText(dealerWin);
+      dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.win()));
       winLabel.setText(dWin);
     }else if(playerHand < dealerHand){
-      playerWinsLlbl.setText(playerWin);
+      playerWinsLbl.setText(String.format("Player Wins: %d", player.win()));
       winLabel.setText(pWin);
     }else{
       winLabel.setText("Push! No one wins.");
+    }
+    try{
+      gameData.writeSaveFile(player.getWins(), dealer.getWins());
+    }catch(IOException e){
+      System.out.println("File not Found");
     }
     buttonHbox.getChildren().removeAll(hitButton, standButton);
     buttonHbox.getChildren().add(playButton);

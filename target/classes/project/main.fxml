@@ -69,7 +69,6 @@
                                     <Insets right="40.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearSaveData" text="Clear Save" />
                            </children>
                         </HBox>
                      </children>
@@ -81,7 +80,7 @@
          <children>
             <VBox alignment="CENTER_LEFT" prefHeight="98.0" prefWidth="206.0">
                <children>
-                  <Label fx:id="playerWinsLlbl" prefHeight="27.0" prefWidth="221.0" stylesheets="@style.css" text="Player Wins: 0" />
+                  <Label fx:id="playerWinsLbl" prefHeight="27.0" prefWidth="221.0" stylesheets="@style.css" text="Player Wins: 0" />
                   <Label fx:id="dealerWinsLbl" prefHeight="27.0" prefWidth="208.0" stylesheets="@style.css" text="Dealer Wins: 0" />
                </children>
             </VBox>
