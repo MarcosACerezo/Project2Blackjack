@@ -3,6 +3,10 @@ package project;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Name: Marcos Cerezo
+ * Username: Cerema01
+ */
 public class Deck {
   private ArrayList<Card> cards;
   private Random random;
@@ -10,12 +14,14 @@ public class Deck {
   public Deck(){
     cards = new ArrayList<>();
     random = new Random();
-    for(String face: Card.FACES){
-      cards.add(new Card(face));
+    //new deck with 52 cards
+    for(String suite: Card.SUITES){
+      for(String face: Card.FACES){
+        cards.add(new Card(face, suite));
+      }
     }
   }
 
-  //use the random object here
   public Card dealCard(){
     //don't need - 1 because nextInt excludes the range max
     int maxDeckIndex = cards.size();
@@ -27,8 +33,10 @@ public class Deck {
 
   public void reset(){
     cards.clear();
-    for(String face: Card.FACES){
-      cards.add(new Card(face));
+    for(String suite: Card.SUITES){
+      for(String face: Card.FACES){
+        cards.add(new Card(face, suite));
+      }
     }
   }
 }

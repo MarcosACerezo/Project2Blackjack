@@ -2,8 +2,12 @@ package project;
 
 import java.util.ArrayList;
 
+/**
+ * Name: Marcos Cerezo
+ * Username: Cerema01
+ */
 public class Player {
-  private static Deck deck;
+  public static Deck deck = new Deck();
   private ArrayList<Card> hand;
   private int wins;
 
@@ -16,10 +20,20 @@ public class Player {
     return hand;
   }
 
+
   public int valueOfHand(){
     int handTotal = 0;
+    //counter to hande whether aces are counted as 1 or 11
+    int aceTotal = 0;
     for(Card card: hand){
-      handTotal = card.valueOf();
+      if(card.getFace().equalsIgnoreCase("A")){
+        aceTotal++;
+      }
+      handTotal += card.valueOf();
+    }
+    while(handTotal > 21 && aceTotal > 0){
+      handTotal = handTotal - 10;
+      aceTotal--;
     }
     return handTotal;
   }
@@ -28,8 +42,10 @@ public class Player {
     hand.clear();
   }
 
+  //algorithm for whether or not the dealer should stand
   public boolean stand(int otherPlayerValue){
-    if(valueOfHand() > otherPlayerValue){
+
+    if(busted() || valueOfHand() > otherPlayerValue){
       return true;
     }else if((valueOfHand() == otherPlayerValue) && otherPlayerValue >= 16){
       double randomSelector = Math.random();
@@ -38,7 +54,6 @@ public class Player {
       }else{
         return false;
       }
-      
     }else{
       return false;
     }
@@ -52,12 +67,12 @@ public class Player {
     }
   }
 
- 
-
-  
-
   public void hit(){
     hand.add(deck.dealCard());
+  }
+
+  public void setWins(int wins){
+    this.wins = wins;
   }
 
   public int win(){

@@ -3,14 +3,21 @@ package project;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+
+/**
+ * Name: Marcos Cerezo
+ * Username: Cerema01
+ */
 public class Card extends ImageView{
+  public static final String[] SUITES = {"H", "S", "C", "D"};
   public static final String[] FACES = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "K", "Q"};
   private static final int HEIGHT = 130;
   private String face;
 
-  public Card(String face){
+  public Card(String face, String suite){
     this.face = face;
-    setImage(new Image(face + ".png"));
+    Image image = new Image(getClass().getResource("/project/moreCards/" + suite + face + ".png").toExternalForm());
+    setImage(image);
     setFitHeight(HEIGHT);
     setPreserveRatio(true);
   }
@@ -22,7 +29,7 @@ public class Card extends ImageView{
   public int valueOf(){
     switch(face){
       case "A":
-      return 1;
+        return 11;
       case "2":
         return 2;
       case "3":
@@ -45,4 +52,5 @@ public class Card extends ImageView{
         return -1;
     }
   }
+  
 }

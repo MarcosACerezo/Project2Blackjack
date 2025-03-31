@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.Controller">
    <styleClass>
       <String fx:value="root" />
       <String fx:value="black-border" />
@@ -32,9 +32,11 @@
                         <Insets right="50.0" />
                      </HBox.margin>
                   </Label>
-                  <Label text="Value: 0" />
+                  <Label text="Value: " />
+                  <Label fx:id="dealerHandLbl" text="0" />
                </children>
             </HBox>
+            <HBox fx:id="dealerHandHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
          </children>
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" styleClass="white-border">
@@ -46,37 +48,76 @@
                         <Insets right="50.0" />
                      </HBox.margin>
                   </Label>
-                  <Label text="Value: 0" />
+                  <Label text="Value: " />
+                  <Label fx:id="playerHandLbl" text="0" />
                </children>
             </HBox>
+            <HBox fx:id="playerHandHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <VBox fx:id="loadGameVBox" alignment="CENTER" prefHeight="100.0" prefWidth="371.0">
+                     <children>
+                        <Label text="Would you like to load the last save?" />
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="yesButton" mnemonicParsing="false" onAction="#loadOption" text="Yes">
+                                 <HBox.margin>
+                                    <Insets right="40.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="noButton" mnemonicParsing="false" onAction="#noLoadOption" text="No">
+                                 <HBox.margin>
+                                    <Insets right="40.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearSaveData" text="Clear Save" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children></HBox>
          </children>
       </VBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <VBox prefHeight="65.0" prefWidth="135.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="98.0" prefWidth="206.0">
                <children>
-                  <Label stylesheets="@style.css" text="Player Wins: 0" />
-                  <Label stylesheets="@style.css" text="Dealer Wins: 0" />
+                  <Label fx:id="playerWinsLlbl" prefHeight="27.0" prefWidth="221.0" stylesheets="@style.css" text="Player Wins: 0" />
+                  <Label fx:id="dealerWinsLbl" prefHeight="27.0" prefWidth="208.0" stylesheets="@style.css" text="Dealer Wins: 0" />
                </children>
             </VBox>
-            <HBox alignment="CENTER" prefHeight="65.0" prefWidth="337.0">
+            <HBox fx:id="buttonHbox" alignment="CENTER" prefHeight="98.0" prefWidth="208.0">
                <children>
-                  <Button mnemonicParsing="false" text="Hit">
+                  <Button fx:id="hitButton" mnemonicParsing="false" onAction="#hit" text="Hit">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" text="Play">
+                  <Button fx:id="playButton" mnemonicParsing="false" onAction="#startGame" text="Play">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" text="Stand">
+                  <Button fx:id="standButton" mnemonicParsing="false" onAction="#stand" text="Stand">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Button>
                </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="98.0" prefWidth="175.0">
+               <children>
+                  <Label fx:id="winLabel" prefHeight="27.0" prefWidth="185.0" text="label">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
             </HBox>
          </children>
       </HBox>
