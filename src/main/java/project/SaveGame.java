@@ -1,7 +1,6 @@
 package project;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -30,11 +29,11 @@ public class SaveGame{
   }
 
   public void writeSaveFile(int pWins, int dWins) throws IOException{
+    //clear contents of file to not save more information than needed
     fileWriter = new PrintWriter(saveFile);
     fileWriter.println(pWins);
     fileWriter.println(dWins);
     fileWriter.close();
-
   }
 
   public boolean hasGameData(){

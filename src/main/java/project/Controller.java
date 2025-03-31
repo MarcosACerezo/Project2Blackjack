@@ -11,13 +11,14 @@ import javafx.scene.layout.VBox;
 
 
 /**
- * Name: Marcos Cerezo
- * Username: Cerema01
- */
+* Name: Marcos Cerezo
+* Username: Cerema01
+*/
 public class Controller {
   private Player player;
   private Player dealer;
   private SaveGame gameData;
+  private Gambling wagers;
 
   @FXML
   private VBox loadGameVBox;
@@ -57,6 +58,7 @@ public class Controller {
   void initialize(){
     player = new Player();
     dealer = new Player();
+    wagers = new Gambling();
     try{
       gameData = new SaveGame();
     }catch(IOException e){
@@ -69,8 +71,11 @@ public class Controller {
     buttonHbox.getChildren().removeAll(hitButton, standButton);
   }
 
+  //action different than regular black jack, dealer starts with one card, 
+  //and player has no cards at the beginning
   @FXML
   void startGame(ActionEvent event) {
+    playerHandHBox.getChildren().add(wagers);
     Player.deck.reset();
     player.clearHand();
     dealer.clearHand();
@@ -80,6 +85,8 @@ public class Controller {
     winLabel.setVisible(false);
     buttonHbox.getChildren().removeAll(playButton);
     buttonHbox.getChildren().addAll(hitButton, standButton);
+    playerHandHBox.getChildren().add(wagers);
+
   }
 
   @FXML
@@ -130,8 +137,6 @@ public class Controller {
     endGame();
   }
 
-  
-
   public void updateHand(Player p, HBox handBox, Label handValue){
     handBox.getChildren().setAll(p.getHand());
     handValue.setText(p.valueOfHand() + "");
@@ -146,22 +151,26 @@ public class Controller {
 
     winLabel.setVisible(true);
     if(player.busted()){
+      dealer.win();
       playerHandLbl.setText(String.format(bust, playerHand));
-      dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.win()));
       winLabel.setText(dWin);
     }else if(dealer.busted()){
+      player.win();
       dealerHandLbl.setText(String.format(bust, dealerHand));
-      playerWinsLbl.setText(String.format("Player Wins: %d", player.win()));
       winLabel.setText(pWin);
     }else if(dealerHand > playerHand){
-      dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.win()));
+      dealer.win();
       winLabel.setText(dWin);
     }else if(playerHand < dealerHand){
-      playerWinsLbl.setText(String.format("Player Wins: %d", player.win()));
+      player.win();
       winLabel.setText(pWin);
     }else{
       winLabel.setText("Push! No one wins.");
     }
+    //get current win values of dealer and player
+    dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.getWins()));
+    playerWinsLbl.setText(String.format("Player Wins: %d", player.getWins()));
+
     try{
       gameData.writeSaveFile(player.getWins(), dealer.getWins());
     }catch(IOException e){
@@ -170,7 +179,4 @@ public class Controller {
     buttonHbox.getChildren().removeAll(hitButton, standButton);
     buttonHbox.getChildren().add(playButton);
   }
-
-
-
 }
