@@ -22,17 +22,19 @@ public class SaveGame{
   }
 
   public int[] loadSaveFile(){
-    int[] nums = new int[2];
+    int[] nums = new int[3];
     nums[0] = fileScanner.nextInt();
     nums[1] = fileScanner.nextInt();
+    nums[2] = fileScanner.nextInt();
     return nums;
   }
 
-  public void writeSaveFile(int pWins, int dWins) throws IOException{
+  public void writeSaveFile(int pWins, int dWins, int bankAmount) throws IOException{
     //clear contents of file to not save more information than needed
     fileWriter = new PrintWriter(saveFile);
     fileWriter.println(pWins);
     fileWriter.println(dWins);
+    fileWriter.println(bankAmount);
     fileWriter.close();
   }
 

@@ -38,7 +38,9 @@ public class Controller {
   @FXML
   private Label playerWinsLbl;
   @FXML
-  private Label winLabel;
+  private Label winLbl;
+  @FXML
+  private Label bankLbl;
   
   @FXML
   private Button yesButton;
@@ -58,7 +60,6 @@ public class Controller {
   void initialize(){
     player = new Player();
     dealer = new Player();
-    wagers = new Gambling();
     try{
       gameData = new SaveGame();
     }catch(IOException e){
@@ -67,7 +68,8 @@ public class Controller {
     if(!gameData.hasGameData()){
       noLoadOption();
     }
-    winLabel.setVisible(false);
+    winLbl.setVisible(false);
+    bankLbl.setVisible(false);
     buttonHbox.getChildren().removeAll(hitButton, standButton);
   }
 
@@ -75,36 +77,40 @@ public class Controller {
   //and player has no cards at the beginning
   @FXML
   void startGame(ActionEvent event) {
-    playerHandHBox.getChildren().add(wagers);
     Player.deck.reset();
     player.clearHand();
     dealer.clearHand();
     dealer.hit();
     updateHand(player, playerHandHBox, playerHandLbl);
     updateHand(dealer, dealerHandHBox, dealerHandLbl);
-    winLabel.setVisible(false);
-    buttonHbox.getChildren().removeAll(playButton);
+    winLbl.setVisible(false);
+    buttonHbox.getChildren().remove(playButton);
     buttonHbox.getChildren().addAll(hitButton, standButton);
     playerHandHBox.getChildren().add(wagers);
-
   }
 
   @FXML
   void loadOption(){
     playerHandHBox.getChildren().remove(loadGameVBox);
-    int[] fileValues = gameData.loadSaveFile();
-    player.setWins(fileValues[0]);
-    dealer.setWins(fileValues[1]);
-    String playerWin = String.format("Player Wins: %d", player.getWins());
-    String dealerWin = String.format("Dealer Wins: %d", dealer.getWins());
-    playerWinsLbl.setText(playerWin);
-    dealerWinsLbl.setText(dealerWin);
+    int[] saveInfo = gameData.loadSaveFile();
+    player.setWins(saveInfo[0]);
+    dealer.setWins(saveInfo[1]);
+    wagers = new Gambling(saveInfo[2]);
+    setWinsLbl();
+    bankLbl.setText(String.format(
+      "Bank: %d", wagers.getBankAmount()));
+    bankLbl.setVisible(true);
+    
   }
 
   //no Operations needed from the file
   @FXML
   void noLoadOption(){
     playerHandHBox.getChildren().remove(loadGameVBox);
+    wagers = new Gambling();
+    bankLbl.setText(String.format(
+      "Bank: %d", wagers.getBankAmount()));
+    bankLbl.setVisible(true);
   }
 
   //not needed because if you select to not load game data, then your information
@@ -149,34 +155,40 @@ public class Controller {
     String pWin = "Player wins!";
     String bust = "%d Bust!";
 
-    winLabel.setVisible(true);
+    winLbl.setVisible(true);
     if(player.busted()){
       dealer.win();
       playerHandLbl.setText(String.format(bust, playerHand));
-      winLabel.setText(dWin);
+      winLbl.setText(dWin);
     }else if(dealer.busted()){
       player.win();
       dealerHandLbl.setText(String.format(bust, dealerHand));
-      winLabel.setText(pWin);
+      winLbl.setText(pWin);
     }else if(dealerHand > playerHand){
       dealer.win();
-      winLabel.setText(dWin);
+      winLbl.setText(dWin);
     }else if(playerHand < dealerHand){
       player.win();
-      winLabel.setText(pWin);
+      winLbl.setText(pWin);
     }else{
-      winLabel.setText("Push! No one wins.");
+      winLbl.setText("Push! No one wins.");
     }
+    setWinsLbl();
     //get current win values of dealer and player
-    dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.getWins()));
-    playerWinsLbl.setText(String.format("Player Wins: %d", player.getWins()));
+    
 
     try{
-      gameData.writeSaveFile(player.getWins(), dealer.getWins());
+      gameData.writeSaveFile(
+        player.getWins(), dealer.getWins(), wagers.getBankAmount());
     }catch(IOException e){
       System.out.println("File not Found");
     }
     buttonHbox.getChildren().removeAll(hitButton, standButton);
     buttonHbox.getChildren().add(playButton);
+  }
+
+  public void setWinsLbl(){
+    dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.getWins()));
+    playerWinsLbl.setText(String.format("Player Wins: %d", player.getWins()));
   }
 }

@@ -103,21 +103,12 @@
                   </Button>
                </children>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="98.0" prefWidth="175.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="98.0" prefWidth="175.0">
                <children>
-                  <Label fx:id="winLabel" prefHeight="27.0" prefWidth="185.0" text="label">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </Label>
+                  <Label fx:id="winLbl" prefHeight="27.0" prefWidth="185.0" text="label" />
+                  <Label fx:id="bankLbl" text="Bank: " />
                </children>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <padding>
-                  <Insets left="5.0" />
-               </padding>
-            </HBox>
+            </VBox>
          </children>
       </HBox>
    </children>
