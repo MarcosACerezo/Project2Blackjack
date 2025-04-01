@@ -10,69 +10,56 @@ import javafx.scene.layout.VBox;
   * Name: Marcos Cerezo
   * Username: Cerema01
   */
-public class Gambling extends VBox{
+public class Gambling{
   //starting amount if no save file is chosen
-  private final int STARTING_AMOUNT = 1000;
-  //JavaFX Controls
-  private Label errorLbl;
-  private TextField amountWagered;
-  private Button wagerButton;
-
-  private String title = "Please Select a wager";
+  public static final int STARTING_AMOUNT = 1000;
   //amount of currency player has
   private int playerBank;
-  
-  public void initUI(){
-    setAlignment(Pos.CENTER);
-    setMinWidth(300);
-    errorLbl = new Label("");
-    wagerButton = new Button("Ready!");
-    amountWagered = new TextField();
-    //adding all elements
-    getChildren().addAll(
-      new Label(title), amountWagered , wagerButton, errorLbl);
-    errorLbl.setVisible(false);
-    //button error handling
-    wagerButton.setOnAction(event  ->{
-      try{
-        setWager(Integer.parseInt(amountWagered.getText()));
-      }catch(NumberFormatException e){
-        errorLbl.setVisible(true);
-        errorLbl.setText("Incorrect int format");
-      }
-    });
-  }
-  
+  private int currentWageredAmount;
+
   //No stored values
   public Gambling(){
     playerBank = STARTING_AMOUNT;
-    initUI();
   }
 
   //pulling bank amount from saved stats
   public Gambling(int bankAmount){
     playerBank = bankAmount;
-    initUI();
   }
 
 
   //prompt the user to enter a valid wager
-  public int setWager(int wager) throws NumberFormatException{
+  public boolean setWager(int wager) throws NumberFormatException{
     if(wager > playerBank || wager <= 0){//invalid entry
-      errorLbl.setText("Enter an amount you own!");
-      errorLbl.setVisible(true);
-      return -1;
+      return false;//handling responsibility passed to controller
+      // errorLbl.setText("Enter an amount you own!");
+      // errorLbl.setVisible(true);
+      // return -1;
     }
-    errorLbl.setVisible(false);
+    // errorLbl.setVisible(false);
     playerBank -= wager;
-    return wager;
+    currentWageredAmount = wager;
+    return true;
   }
 
   public int getBankAmount(){
     return playerBank;
   }
 
-  public void setBankAmount(int amount){
-    setBankAmount(amount);
+  //only use this method for setting the initial bank balance
+  public void setBalance(int amount){
+    playerBank = amount;
+  }
+
+  public void playerWin(){
+    //this might not need to be here
+    if(currentWageredAmount < 300){
+      playerBank += currentWageredAmount * 1.25;
+    }else if(currentWageredAmount < 600){
+      playerBank += currentWageredAmount * 1.5;
+    }else{
+      playerBank += currentWageredAmount * 2;
+    }
+    currentWageredAmount = -1;//reset the amount after it is used
   }
 }

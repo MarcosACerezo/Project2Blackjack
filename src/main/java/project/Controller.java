@@ -60,6 +60,7 @@ public class Controller {
   void initialize(){
     player = new Player();
     dealer = new Player();
+    wagers = new Gambling();
     try{
       gameData = new SaveGame();
     }catch(IOException e){
@@ -69,7 +70,6 @@ public class Controller {
       noLoadOption();
     }
     winLbl.setVisible(false);
-    bankLbl.setVisible(false);
     buttonHbox.getChildren().removeAll(hitButton, standButton);
   }
 
@@ -84,33 +84,38 @@ public class Controller {
     updateHand(player, playerHandHBox, playerHandLbl);
     updateHand(dealer, dealerHandHBox, dealerHandLbl);
     winLbl.setVisible(false);
-    buttonHbox.getChildren().remove(playButton);
+    buttonHbox.getChildren().removeAll(playButton);
     buttonHbox.getChildren().addAll(hitButton, standButton);
-    playerHandHBox.getChildren().add(wagers);
+
   }
 
   @FXML
   void loadOption(){
     playerHandHBox.getChildren().remove(loadGameVBox);
-    int[] saveInfo = gameData.loadSaveFile();
-    player.setWins(saveInfo[0]);
-    dealer.setWins(saveInfo[1]);
-    wagers = new Gambling(saveInfo[2]);
-    setWinsLbl();
-    bankLbl.setText(String.format(
-      "Bank: %d", wagers.getBankAmount()));
-    bankLbl.setVisible(true);
+    int[] fileValues = gameData.loadSaveFile();
+    player.setWins(fileValues[0]);
+    dealer.setWins(fileValues[1]);
+    wagers.setBalance(fileValues[2]);
     
+    String playerWin =
+      String.format("Player Wins: %d", player.getWins());
+    String dealerWin = 
+      String.format("Dealer Wins: %d", dealer.getWins());
+    String bankAmount = 
+      String.format("Bank: %d", wagers.getBankAmount());
+    playerWinsLbl.setText(playerWin);
+    dealerWinsLbl.setText(dealerWin);
+    bankLbl.setText(bankAmount);
   }
 
   //no Operations needed from the file
   @FXML
   void noLoadOption(){
+    wagers.setBalance(Gambling.STARTING_AMOUNT);
+    String bankAmount = 
+      String.format("Bank: %d", wagers.getBankAmount());
     playerHandHBox.getChildren().remove(loadGameVBox);
-    wagers = new Gambling();
-    bankLbl.setText(String.format(
-      "Bank: %d", wagers.getBankAmount()));
-    bankLbl.setVisible(true);
+    bankLbl.setText(bankAmount);
   }
 
   //not needed because if you select to not load game data, then your information
@@ -173,9 +178,9 @@ public class Controller {
     }else{
       winLbl.setText("Push! No one wins.");
     }
-    setWinsLbl();
     //get current win values of dealer and player
-    
+    dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.getWins()));
+    playerWinsLbl.setText(String.format("Player Wins: %d", player.getWins()));
 
     try{
       gameData.writeSaveFile(
@@ -185,10 +190,5 @@ public class Controller {
     }
     buttonHbox.getChildren().removeAll(hitButton, standButton);
     buttonHbox.getChildren().add(playButton);
-  }
-
-  public void setWinsLbl(){
-    dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.getWins()));
-    playerWinsLbl.setText(String.format("Player Wins: %d", player.getWins()));
   }
 }
