@@ -27,19 +27,17 @@ public class Gambling{
     playerBank = bankAmount;
   }
 
-
-  //prompt the user to enter a valid wager
-  public boolean setWager(int wager) throws NumberFormatException{
+  public boolean validWager(int wager){
     if(wager > playerBank || wager <= 0){//invalid entry
       return false;//handling responsibility passed to controller
-      // errorLbl.setText("Enter an amount you own!");
-      // errorLbl.setVisible(true);
-      // return -1;
     }
-    // errorLbl.setVisible(false);
+    return true;
+  }
+
+  //prompt the user to enter a valid wager
+  public void setWager(int wager) throws NumberFormatException{
     playerBank -= wager;
     currentWageredAmount = wager;
-    return true;
   }
 
   public int getBankAmount(){
@@ -52,7 +50,6 @@ public class Gambling{
   }
 
   public void playerWin(){
-    //this might not need to be here
     if(currentWageredAmount < 300){
       playerBank += currentWageredAmount * 1.25;
     }else if(currentWageredAmount < 600){
@@ -61,5 +58,17 @@ public class Gambling{
       playerBank += currentWageredAmount * 2;
     }
     currentWageredAmount = -1;//reset the amount after it is used
+  }
+
+  public void push(){
+    playerBank += currentWageredAmount;
+    currentWageredAmount = -1;
+  }
+
+  public boolean noMoney(){
+    if(playerBank == 0){
+      return true;
+    }
+    return false;
   }
 }

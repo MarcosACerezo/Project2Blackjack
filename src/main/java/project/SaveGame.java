@@ -14,11 +14,15 @@ public class SaveGame{
   private File saveFile;
   private PrintWriter fileWriter;
   private Scanner fileScanner;
+  private int[] saveFileValues;
 
 
   public SaveGame() throws IOException{
     saveFile = new File(FILE_URL);
     fileScanner = new Scanner(saveFile);
+    if(hasGameData()){
+      saveFileValues = loadSaveFile();
+    }
   }
 
   public int[] loadSaveFile(){
@@ -27,6 +31,10 @@ public class SaveGame{
     nums[1] = fileScanner.nextInt();
     nums[2] = fileScanner.nextInt();
     return nums;
+  }
+
+  public int[] getFileValues(){
+    return saveFileValues;
   }
 
   public void writeSaveFile(int pWins, int dWins, int bankAmount) throws IOException{
@@ -44,6 +52,14 @@ public class SaveGame{
     }else{
       return false;
     }
+  }
+
+  public boolean moneyInBank(){
+    // System.out.println(saveFileValues == null);
+    if(saveFileValues != null && saveFileValues[2] != 0){
+      return true;
+    }
+    return false;
   }
 
   //not needed because if you select to not load game data, then your information
