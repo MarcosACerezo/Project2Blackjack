@@ -20,16 +20,16 @@ public class Player {
     return hand;
   }
 
-
   public int valueOfHand(){
-    int handTotal = 0;
-    //counter to hande whether aces are counted as 1 or 11
+    //Counter for aces to handle whether values will be 1 or 11
     int aceTotal = 0;
+    int handTotal = 0;
+    
     for(Card card: hand){
-      if(card.getFace().equalsIgnoreCase("A")){
+      handTotal += card.valueOf();
+      if(card.getFace().equals("A")){
         aceTotal++;
       }
-      handTotal += card.valueOf();
     }
     while(handTotal > 21 && aceTotal > 0){
       handTotal = handTotal - 10;
@@ -44,7 +44,6 @@ public class Player {
 
   //algorithm for whether or not the dealer should stand
   public boolean stand(int otherPlayerValue){
-
     if(busted() || valueOfHand() > otherPlayerValue){
       return true;
     }else if((valueOfHand() == otherPlayerValue) && otherPlayerValue >= 16){
@@ -62,9 +61,8 @@ public class Player {
   public boolean busted(){
     if(valueOfHand() > 21){
       return true;
-    }else{
-      return false;
     }
+    return false;
   }
 
   public void hit(){
@@ -79,10 +77,7 @@ public class Player {
     return wins;
   }
 
-  public int win(){
+  public void win(){
     wins++;
-    return wins;
   }
-
-
 }

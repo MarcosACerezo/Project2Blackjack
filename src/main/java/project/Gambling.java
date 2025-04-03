@@ -1,11 +1,5 @@
 package project;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-
 /**
   * Name: Marcos Cerezo
   * Username: Cerema01
@@ -49,7 +43,7 @@ public class Gambling{
     playerBank = amount;
   }
 
-  public void playerWin(){
+  public void payout(){
     if(currentWageredAmount < 300){
       playerBank += currentWageredAmount * 1.25;
     }else if(currentWageredAmount < 600){

@@ -1,7 +1,6 @@
 package project;
 
 import java.io.IOException;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -11,20 +10,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-
 /**
 * Name: Marcos Cerezo
 * Username: Cerema01
 */
 public class Controller {
-  private final String GAME_OVER 
-  = "Game Over. :(";
+  private static final String GAME_OVER = "Game Over. :(";
+  private static final int MIN_VBOX_WIDTH = 300;
   private Player player;
   private Player dealer;
   private SaveGame gameData;
   private Gambling bet;
-  private String titleString = "Please set a bet amount";
-
+  private final String titleString = "Please set a bet amount";
 
   //gambling controls and containers
   private VBox betVBox;
@@ -33,50 +30,37 @@ public class Controller {
   private Button betBtn;
   private Label errorLbl;
 
+  //layout containers
   @FXML
   private VBox loadGameVBox;
   @FXML
-  private HBox buttonHbox;
+  private HBox buttonHbox,
+               dealerHandHBox,
+               playerHandHBox;
+  //Display Labels
   @FXML
-  private HBox dealerHandHBox; 
+  private Label dealerHandLbl,
+                dealerWinsLbl,
+                playerHandLbl,
+                playerWinsLbl,
+                winLbl,
+                bankLbl;
+  //Interaction Buttons
   @FXML
-  private HBox playerHandHBox;
-
-  @FXML
-  private Label dealerHandLbl;
-  @FXML
-  private Label dealerWinsLbl;
-  @FXML
-  private Label playerHandLbl;
-  @FXML
-  private Label playerWinsLbl;
-  @FXML
-  private Label winLbl;
-  @FXML
-  private Label bankLbl;
-  
-  @FXML
-  private Button yesButton;
-  @FXML 
-  private Button noButton;
-  // @FXML
-  // private Button clearButton;
-  @FXML
-  private Button hitButton;
-  @FXML
-  private Button playButton;
-  @FXML
-  private Button standButton;
+  private Button yesButton,
+                 noButton,
+                 hitButton,
+                 playButton,
+                 standButton;
  
-
   public void initWagerUI(){
-    betVBox = new VBox();
-    betVBox.setAlignment(Pos.CENTER);
-    betVBox.setMinWidth(300);
-    title = new Label(titleString);
+    betVBox    = new VBox();
+    title      = new Label(titleString);
     desiredBet = new TextField();
-    betBtn = new Button("Place Bet");
-    errorLbl = new Label();
+    betBtn     = new Button("Place Bet");
+    errorLbl   = new Label();
+    betVBox.setAlignment(Pos.CENTER);
+    betVBox.setMinWidth(MIN_VBOX_WIDTH);
     betVBox.getChildren().addAll(title, desiredBet, betBtn, errorLbl);
 
     betBtn.setOnAction(event -> {
@@ -126,12 +110,13 @@ public class Controller {
     Player.deck.reset();
     player.clearHand();
     dealer.clearHand();
-    // dealer.hit();Don't want the dealer to hit until after
     updateHand(player, playerHandHBox, playerHandLbl);
     updateHand(dealer, dealerHandHBox, dealerHandLbl);
     winLbl.setVisible(false);
     buttonHbox.getChildren().removeAll(playButton);
     buttonHbox.getChildren().addAll(hitButton, standButton);
+    hitButton.setDisable(true);
+    standButton.setDisable(true);
     playerHandHBox.getChildren().add(betVBox);
   }
 
@@ -144,6 +129,8 @@ public class Controller {
     dealer.hit();
     updateHand(player, playerHandHBox, playerHandLbl);
     updateHand(dealer, dealerHandHBox, dealerHandLbl);
+    hitButton.setDisable(false);
+    standButton.setDisable(false);
     bankLbl.setText(bankAmount);
   }
 
@@ -155,14 +142,9 @@ public class Controller {
     dealer.setWins(fileValues[1]);
     bet.setBalance(fileValues[2]);
     
-    String playerWin =
-      String.format("Player Wins: %d", player.getWins());
-    String dealerWin = 
-      String.format("Dealer Wins: %d", dealer.getWins());
     String bankAmount = 
       String.format("Bank: %d", bet.getBankAmount());
-    playerWinsLbl.setText(playerWin);
-    dealerWinsLbl.setText(dealerWin);
+    setWinsLbls();
     bankLbl.setText(bankAmount);
     playButton.setDisable(false);
   }
@@ -177,18 +159,6 @@ public class Controller {
     bankLbl.setText(bankAmount);
     playButton.setDisable(false);
   }
-
-  //not needed because if you select to not load game data, then your information
-  //wil be rewritten regardless
-  // @FXML
-  // void clearSaveData(){
-  //   playerHandHBox.getChildren().remove(loadGameVBox);
-  //   try{
-  //     gameData.clearGameData();
-  //   }catch(IOException e ){
-  //     System.out.println("File not Found");
-  //   }
-  // }
 
   @FXML
   void hit(ActionEvent event) {
@@ -227,7 +197,7 @@ public class Controller {
       winLbl.setText(dWin);
     }else if(dealer.busted()){
       player.win();
-      bet.playerWin();
+      bet.payout();
       dealerHandLbl.setText(String.format(bust, dealerHand));
       winLbl.setText(pWin);
     }else if(dealerHand > playerHand){
@@ -235,15 +205,13 @@ public class Controller {
       winLbl.setText(dWin);
     }else if(playerHand < dealerHand){
       player.win();
-      bet.playerWin();
+      bet.payout();
       winLbl.setText(pWin);
     }else{
       winLbl.setText("Push! No one wins.");
       bet.push();
     }
-    //get current win values of dealer and player
-    dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.getWins()));
-    playerWinsLbl.setText(String.format("Player Wins: %d", player.getWins()));
+    setWinsLbls();
     bankLbl.setText(String.format("Bank: %d", bet.getBankAmount()));
 
     try{
@@ -254,9 +222,16 @@ public class Controller {
     }
     buttonHbox.getChildren().removeAll(hitButton, standButton);
     buttonHbox.getChildren().add(playButton);
+    //LOSE THE GAME
     if(bet.noMoney()){
       playButton.setDisable(true);
       winLbl.setText(GAME_OVER);
     }
   }
+
+  public void setWinsLbls(){
+    dealerWinsLbl.setText(String.format("Dealer Wins: %d", dealer.getWins()));
+    playerWinsLbl.setText(String.format("Player Wins: %d", player.getWins()));
+  }
+
 }

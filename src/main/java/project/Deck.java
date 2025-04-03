@@ -15,11 +15,7 @@ public class Deck {
     cards = new ArrayList<>();
     random = new Random();
     //new deck with 52 cards
-    for(String suite: Card.SUITES){
-      for(String face: Card.FACES){
-        cards.add(new Card(face, suite));
-      }
-    }
+    newDeck();
   }
 
   public Card dealCard(){
@@ -33,6 +29,10 @@ public class Deck {
 
   public void reset(){
     cards.clear();
+    newDeck();
+  }
+
+  public void newDeck(){
     for(String suite: Card.SUITES){
       for(String face: Card.FACES){
         cards.add(new Card(face, suite));
